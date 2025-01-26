@@ -1,0 +1,57 @@
+name: Deploy to GKE
+on:
+  push:
+    branches:
+      - main
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+  TF_STATE_BUCKET_NAME: ${{ secrets.GCP_TF_STATE_BUCKET }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: ${{ github.sha }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Docker auth
+        run: gcloud auth configure-docker
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t asia.gcr.io/$GCP_PROJECT_ID/fraud-detection:$IMAGE_TAG .
+          docker push asia.gcr.io/$GCP_PROJECT_ID/fraud-detection:$IMAGE_TAG
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: terraform init -backend-config="bucket=$TF_STATE_BUCKET_NAME" -backend-config="prefix=fraud-detection"
+        working-directory: ./terraform
+
+      - name: Terraform Plan
+        run: |
+          terraform plan \
+          -var="region=asia-south1" \
+          -var="zone=asia-south1-a" \
+          -var="project_id=$GCP_PROJECT_ID" \
+          -var="container_image=asia.gcr.io/$GCP_PROJECT_ID/fraud-detection:$IMAGE_TAG" \
+          -out=PLAN
+        working-directory: ./terraform
+
+      - name: Terraform Apply
+        run: terraform apply PLAN
+        working-directory: ./terraform
