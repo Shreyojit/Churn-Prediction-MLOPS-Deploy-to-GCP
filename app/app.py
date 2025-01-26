@@ -16,6 +16,14 @@ model_path = os.path.join(base_dir, "model", "fraud_detection_model.h5")
 scaler_path = os.path.join(base_dir, "model", "scaler.pkl")
 training_info_path = os.path.join(base_dir, "model", "training_info.pkl")
 
+
+print(f"Model Path: {model_path}")
+print(f"Scaler Path: {scaler_path}")
+print(f"Training Info Path: {training_info_path}")
+
+
+
+
 # Check if the model file exists
 if not os.path.exists(model_path):
     raise FileNotFoundError(f"Model file not found at {model_path}")
