@@ -12,7 +12,7 @@ import json
 load_dotenv()
 
 # Set the FastAPI URL dynamically
-FASTAPI_URL = "http://34.93.21.108:80/predict"  # Use Docker service name
+FASTAPI_URL = "http://fastapi:80/predict"  # Use Docker service name
 
 # Page title and description
 st.set_page_config(page_title="Fraud Detection System", layout="wide")
