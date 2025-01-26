@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    container_name: fraud_detection_app
+    ports:
+      - "8000:80"  # FastAPI
+      - "8501:8501"  # Streamlit
+    volumes:
+      - ./app:/app  # Mount the app directory
+    environment:
+      - FASTAPI_URL=http://localhost:8000/predict  # Set FastAPI URL
+
+  nginx:
+    image: nginx:latest
+    container_name: fraud_detection_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf  # Mount Nginx config

@@ -1,0 +1,42 @@
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local data and logs
+data/
+logs/
+
+# Environment variables
+.env
+.env.local
+
+# Local development files
+*.log
+*.sqlite3
+
+# Model and data files (if not versioned)
+model/
+input_data.json
+
+# Compiled files
+*.so
+*.dll
+*.exe
+
+# Distribution files
+dist/
+build/
+*.egg-info/
