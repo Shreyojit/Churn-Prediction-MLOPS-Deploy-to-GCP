@@ -16,10 +16,3 @@ COPY app/ /app/
 
 # Expose ports for FastAPI and Streamlit
 EXPOSE 80 8501
-
-# Set environment variables
-ENV FASTAPI_URL=http://localhost:8000/predict
-
-# Run both FastAPI and Streamlit using a process manager
-CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port 80 & streamlit run streamlit_app.py --server.port 8501 --server.address 0.0.0.0"]
-

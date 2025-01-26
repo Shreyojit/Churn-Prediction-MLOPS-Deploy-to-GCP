@@ -6,6 +6,7 @@ services:
     container_name: fraud_detection_fastapi
     ports:
       - "8000:80"  # Expose FastAPI to the host on port 8000
+    command: uvicorn app:app --host 0.0.0.0 --port 80  # Run FastAPI
     environment:
       - FASTAPI_URL=http://fastapi:80/predict  # FastAPI service name inside the Docker network
 
@@ -16,5 +17,6 @@ services:
       - "8501:8501"  # Expose Streamlit on port 8501
     depends_on:
       - fastapi  # Ensure Streamlit waits for FastAPI to be ready
+    command: streamlit run streamlit_app.py --server.port 8501 --server.address 0.0.0.0  # Run Streamlit
     environment:
       - FASTAPI_URL=http://fastapi:80/predict  # Use FastAPI service name for communication
